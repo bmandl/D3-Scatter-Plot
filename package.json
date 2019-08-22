@@ -1,0 +1,27 @@
+{
+  "name": "scatterplot",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmandl/ScatterPlot.git"
+  },
+  "author": "Blaž Mandl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bmandl/ScatterPlot/issues"
+  },
+  "homepage": "https://github.com/bmandl/ScatterPlot#readme",
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "d3": "^5.11.0"
+  }
+}
