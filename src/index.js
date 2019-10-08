@@ -1,17 +1,29 @@
 import * as d3 from "d3";
 
-const h = 500,
-    xPadding = 80,
-    yPadding = 50;
 
-const tooltip = d3.select('#container').append('div')
+const margin = {
+    top: 100,
+    right: 20,
+    bottom: 30,
+    left: 60
+}
+
+const tooltip = d3.select('body').append('div')
     .attr('id', "tooltip")
+    .attr('class',"tooltip")
     .style('opacity', 0)
-    .style('position','absolute');
+    .style('position', 'absolute');
 
-const dataDisplay = d3.select("#dataBox").append("svg")
-    .attr("width", "100%")
-    .attr("height", h);
+const h = 630 - margin.top - margin.bottom;
+const w = //dataDisplay.node().clientWidth 
+    920 - margin.left - margin.right;
+
+const dataDisplay = d3.select("body").append("svg")
+    .attr("height", h + margin.top + margin.bottom)
+    .attr("width", w + margin.left + margin.right)
+    .attr("class", "graph")
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 const xScale = d3.scaleLinear();
 const yScale = d3.scaleTime();
@@ -34,17 +46,31 @@ d3.json("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
         d.Time = new Date(1970, 0, 1, 0, parsedTime[0], parsedTime[1]);
     });
 
-    const w = dataDisplay.node().clientWidth - xPadding;
-
     const xDomain = yearRange(dataset);
     xScale.domain([xDomain.min - 1, xDomain.max + 1]);
-    xScale.range([xPadding, w]);
+    xScale.range([0, w]);
 
     yScale.domain(d3.extent(dataset, d => d.Time));
-    yScale.range([yPadding, h - yPadding]);
+    yScale.range([0, h]);
 
     const xAxis = d3.axisBottom(xScale).tickFormat(d3.format('.0f'));
     const yAxis = d3.axisLeft(yScale).tickFormat(d3.timeFormat("%M:%S"));
+
+    dataDisplay.append("g")
+        .attr("id", "x-axis")
+        .attr("transform", `translate(0,${(h)})`)
+        .call(xAxis);
+
+    dataDisplay.append("g")
+        .attr("id", "y-axis")
+        .call(yAxis);
+
+    dataDisplay.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -160)
+        .attr('y', -44)
+        .style('font-size', 18)
+        .text('Time in Minutes');
 
     dataDisplay.selectAll("circle")
         .data(dataset)
@@ -57,34 +83,39 @@ d3.json("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
         .attr("cy", d => yScale(d.Time))
         .attr("r", 6)
         .style("fill", d => color(d.Doping != ""))
-        .style("stroke","#000")
-        .on("mouseover", (d,i) => {
+        .style("stroke", "#000")
+        .on("mouseover", (d, i) => {
             tooltip.transition()
-            .duration(200)
-            .style('opacity',0.95);
+                .duration(200)
+                .style('opacity', 0.95);
             tooltip.html(`${d.Name}: ${d.Nationality}<br>
                           ${d.Year}, ${d3.timeFormat("%M:%S")(d.Time)}<br><br>
                           ${d.Doping}`)
-            .attr("data-year", d.Year)
-            .style('left', `${d3.event.pageX}px`)
-            .style('top', `${d3.event.pageY-28}px`)
-            .style('transform', 'translateX(60px)');
+                .attr("data-year", d.Year)
+                .style('left', `${d3.event.pageX}px`)
+                .style('top', `${d3.event.pageY - 28}px`)
+                .style('transform', 'translateX(60px)');
         })
         .on('mouseout', () => {
             tooltip.transition()
-                   .duration(200)
-                   .style('opacity',0);
+                .duration(200)
+                .style('opacity', 0);
         });
 
-    dataDisplay.append("g")
-        .attr("id", "x-axis")
-        .attr("transform", `translate(0,${(h - yPadding)})`)
-        .call(xAxis);
+    dataDisplay.append("text")
+        .attr("id", "title")
+        .attr("x", (w / 2))
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "30px")
+        .text("Doping in Professional Bicycle Racing");
 
-    dataDisplay.append("g")
-        .attr("id", "y-axis")
-        .attr("transform", `translate(${(xPadding)},0)`)
-        .call(yAxis);
+    dataDisplay.append("text")
+        .attr("x", (w / 2))
+        .attr("y", 0 - (margin.top / 2) + 25)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .text("35 Fastest times up Alpe d'Huez");
 
     const legend = dataDisplay.selectAll(".legend")
         .data(color.domain())
@@ -97,7 +128,7 @@ d3.json("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", color)
-        .style("stroke","#000");
+        .style("stroke", "#000");
     legend.append("text")
         .attr("x", w - 24)
         .attr("y", 9)

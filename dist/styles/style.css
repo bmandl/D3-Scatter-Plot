@@ -1,0 +1,20 @@
+.graph {
+    display: block;
+    margin: auto;
+    background-color: white;
+}
+
+body{
+    width: 100%;
+    height: 100%;
+}
+
+div.tooltip {	
+    position: absolute;				
+    padding: 10px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
