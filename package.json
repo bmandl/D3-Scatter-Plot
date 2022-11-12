@@ -19,7 +19,7 @@
   "homepage": "https://github.com/bmandl/ScatterPlot#readme",
   "devDependencies": {
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "d3": "^5.11.0"
